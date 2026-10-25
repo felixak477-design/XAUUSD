@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08111f"><title>GOLDMIND AI V4 · XAU/USD</title>
+<script src="https://unpkg.com/lightweight-charts@4.2.2/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+:root{color-scheme:dark;--bg:#07101d;--panel:#101e31;--panel2:#0a1626;--line:#22344c;--text:#eef4ff;--muted:#9bacc4;--gold:#f6c65b;--green:#34d6a0;--red:#ff6d82}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#14243b,#07101d 55%);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1100px;margin:auto;padding:20px 14px 48px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}.brand{font-weight:850;letter-spacing:.13em}.brand span{color:var(--gold)}.sub{color:var(--muted);font-size:12px;letter-spacing:.08em}
+.panel{background:linear-gradient(145deg,#122238,#0d192a);border:1px solid var(--line);border-radius:20px;padding:18px;margin:14px 0;box-shadow:0 12px 36px #0002}.head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.price{font-size:clamp(30px,6vw,48px);font-weight:800;letter-spacing:-.04em}.muted{color:var(--muted)}.status{font-size:12px;border:1px solid var(--line);padding:6px 10px;border-radius:99px}.status.ok{color:var(--green)}.status.bad{color:var(--red)}button,select{background:#172940;color:var(--text);border:1px solid #344963;border-radius:10px;padding:11px 14px;font:inherit}button{background:var(--gold);color:#17140a;border:0;font-weight:750;cursor:pointer}button:disabled{opacity:.6;cursor:wait}.warn{margin-top:14px;border:1px solid #67303b;background:#321b27;color:#ffb4c0;padding:14px;border-radius:14px;overflow-wrap:anywhere}.oknote{margin-top:12px;color:var(--muted);font-size:13px}
+#chart{height:360px;width:100%;margin-top:16px}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.tile{background:var(--panel2);border:1px solid var(--line);padding:14px;border-radius:14px;min-width:0}.tile small{display:block;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:10px}.tile strong{display:block;font-size:clamp(16px,2.7vw,23px);margin-top:5px;overflow-wrap:anywhere}.green{color:var(--green)}.red{color:var(--red)}.gold{color:var(--gold)}.sectiontitle{font-size:19px;font-weight:750;margin:0 0 14px}.signal{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.signal strong{font-size:23px}.levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.foot{color:var(--muted);font-size:12px;text-align:center;margin:24px 0 0}
+@media(max-width:650px){main{padding:14px 10px 34px}.panel{padding:14px;border-radius:16px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.levels{grid-template-columns:repeat(2,minmax(0,1fr))}#chart{height:310px}}
+</style></head>
+<body><main>
+<header class="top"><div><div class="brand">GOLD<span>MIND</span> AI <span>V3</span></div><div class="sub">XAU/USD MARKET ANALYSIS</div></div><div class="head"><span id="connection" class="status bad">Checking data…</span><select id="interval" aria-label="Chart timeframe"><option value="15min">15 minutes</option><option value="5min">5 minutes</option><option value="1h">1 hour</option></select><button id="refresh">Refresh analysis</button></div></header>
+<section class="panel"><div class="head"><div><div class="sub">GOLD / US DOLLAR · LAST CANDLE CLOSE</div><div id="price" class="price">—</div><div id="lasttime" class="muted">No verified market data loaded</div></div><div id="signal" class="status">WAIT</div></div><div id="error" class="warn" hidden></div><div id="stale" class="oknote">No data loaded yet. Signals are disabled until fresh candles are verified.</div></section>
+<section class="panel"><div class="head"><h2 class="sectiontitle">Candlestick chart</h2><span class="muted">EMA 20 / EMA 50 · entry and risk levels</span></div><div id="chart"></div><div class="oknote">Candles and levels appear only when the API returns valid market data. A cached chart is always marked stale.</div></section>
+<section class="panel"><h2 class="sectiontitle">Market bias</h2><div class="grid">
+<div class="tile"><small>Trend</small><strong id="trend">—</strong></div><div class="tile"><small>RSI (14)</small><strong id="rsi">—</strong></div><div class="tile"><small>EMA 20</small><strong id="ema20">—</strong></div><div class="tile"><small>EMA 50</small><strong id="ema50">—</strong></div></div></section>
+<section class="panel"><h2 class="sectiontitle">Entry & risk plan</h2><div class="signal"><strong id="direction">WAIT</strong><span id="reason" class="muted">Waiting for verified candles and confirmation.</span></div><div class="levels" style="margin-top:14px">
+<div class="tile"><small>Entry reference</small><strong id="entry">—</strong></div><div class="tile"><small>Stop-loss</small><strong id="sl" class="red">—</strong></div><div class="tile"><small>Take-profit 1</small><strong id="tp1" class="green">—</strong></div><div class="tile"><small>Take-profit 2</small><strong id="tp2" class="green">—</strong></div><div class="tile"><small>Support</small><strong id="support">—</strong></div><div class="tile"><small>Resistance</small><strong id="resistance">—</strong></div></div><p class="oknote">These are rule-based technical references, not guarantees. Confirm spread, execution price and risk before any trade. This site does not place trades.</p></section>
+<footer class="foot">GOLDMIND AI V4 · Data provided by Twelve Data when available · Never trade on stale or unverified data.</footer>
+</main>
+<script>
+(() => {
+ const $ = id => document.getElementById(id);
+ let chart, candleSeries, ema20Series, ema50Series, levelLines=[];
+ const CACHE_KEY = 'goldmind_v4_cache_';
+ const CACHE_MS = 60000;
+ const fmt = n => Number.isFinite(Number(n)) ? Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
+ function initChart(){
+   if(!window.LightweightCharts){ $('error').hidden=false; $('error').textContent='Chart library did not load. Check your internet connection.'; return; }
+   chart=LightweightCharts.createChart($('chart'),{width:$('chart').clientWidth,height:$('chart').clientHeight,layout:{background:{color:'#0a1626'},textColor:'#aabbd0'},grid:{vertLines:{color:'#1a2a3f'},horzLines:{color:'#1a2a3f'}},rightPriceScale:{borderColor:'#263a52'},timeScale:{borderColor:'#263a52',timeVisible:true,secondsVisible:false},crosshair:{mode:1}});
+   candleSeries=chart.addCandlestickSeries({upColor:'#27c997',downColor:'#ff657c',borderUpColor:'#27c997',borderDownColor:'#ff657c',wickUpColor:'#27c997',wickDownColor:'#ff657c'});
+   ema20Series=chart.addLineSeries({color:'#f6c65b',lineWidth:2,priceLineVisible:false,lastValueVisible:false});
+   ema50Series=chart.addLineSeries({color:'#8fa9ff',lineWidth:2,priceLineVisible:false,lastValueVisible:false});
+   new ResizeObserver(()=>chart.applyOptions({width:$('chart').clientWidth,height:$('chart').clientHeight})).observe($('chart'));
+ }
+ function setStatus(ok,txt){$('connection').className='status '+(ok?'ok':'bad');$('connection').textContent=txt;}
+ function showError(msg){$('error').hidden=!msg;$('error').textContent=msg||'';}
+ function showData(d, stale=false){
+   const candles=Array.isArray(d.candles)?d.candles:[];
+   if(!d.ok || candles.length<20) throw new Error(d.error||'Not enough valid candles returned.');
+   const valid=candles.every(c=>Number.isFinite(+c.open)&&Number.isFinite(+c.high)&&Number.isFinite(+c.low)&&Number.isFinite(+c.close)&&c.time);
+   if(!valid) throw new Error('API returned invalid candle values. Signals are disabled.');
+   const bars=candles.map(c=>({time:Math.floor(new Date(c.time).getTime()/1000),open:+c.open,high:+c.high,low:+c.low,close:+c.close})).filter(c=>Number.isFinite(c.time)).sort((a,b)=>a.time-b.time);
+   const unique=bars.filter((c,i)=>i===0||c.time!==bars[i-1].time);
+   if(unique.length<20) throw new Error('Not enough valid timestamped candles to plot.');
+   candleSeries.setData(unique);
+   const e20=calcEma(unique.map(c=>c.close),20), e50=calcEma(unique.map(c=>c.close),50);
+   ema20Series.setData(unique.slice(-e20.length).map((c,i)=>({time:c.time,value:e20[i]})));
+   ema50Series.setData(unique.slice(-e50.length).map((c,i)=>({time:c.time,value:e50[i]})));
+   chart.timeScale().fitContent();
+   const freshAge=Date.now()-new Date(d.candleTime||candles[candles.length-1].time).getTime();
+   const maxAge=({'1min':180000,'5min':900000,'15min':2700000,'1h':10800000})[d.interval]||2700000;
+   const isFresh=!stale && Number.isFinite(freshAge) && freshAge>=-300000 && freshAge<=maxAge;
+   $('price').textContent=fmt(d.price);
+   $('lasttime').textContent='Last candle: '+new Date(d.candleTime||candles[candles.length-1].time).toLocaleString();
+   setStatus(isFresh,'● '+(isFresh?'FRESH DATA':'STALE / UNVERIFIED'));
+   $('stale').textContent=isFresh?'Data timestamp passed freshness check. This does not guarantee trade profitability.':'Cached or old candles detected. Chart is shown for reference only; BUY/SELL signals are disabled.';
+   $('trend').textContent=isFresh?(d.bias||'NEUTRAL'):'UNVERIFIED';
+   $('trend').className=isFresh?(d.bias==='BULLISH'?'green':d.bias==='BEARISH'?'red':'gold'):'';
+   $('rsi').textContent=isFresh?fmt(d.rsi):'—'; $('ema20').textContent=isFresh?fmt(d.ema20):'—'; $('ema50').textContent=isFresh?fmt(d.ema50):'—';
+   $('signal').textContent=isFresh?(d.signal||'WAIT'):'WAIT'; $('direction').textContent=$('signal').textContent;
+   $('reason').textContent=isFresh?(d.reason||'Technical setup only; confirm before trading.'):'No actionable signal because data is stale or unverified.';
+   for(const id of ['entry','sl','tp1','tp2','support','resistance']) $(id).textContent=isFresh?fmt(d[id]):'—';
+   levelLines.forEach(line=>{try{candleSeries.removePriceLine(line)}catch(e){}}); levelLines=[];
+   if(isFresh) [['entry',d.entry,'#f6c65b'],['sl',d.sl,'#ff657c'],['tp1',d.tp1,'#27c997'],['tp2',d.tp2,'#27c997'],['support',d.support,'#47b9a0'],['resistance',d.resistance,'#ff8798']].forEach(([title,value,color])=>{if(Number.isFinite(+value))levelLines.push(candleSeries.createPriceLine({price:+value,color,lineWidth:1,lineStyle:2,axisLabelVisible:true,title}));});
+ }
+ function calcEma(vals,period){if(vals.length<period)return[];let out=[],k=2/(period+1),v=vals.slice(0,period).reduce((a,b)=>a+b,0)/period;out.push(v);for(let i=period;i<vals.length;i++){v=vals[i]*k+v*(1-k);out.push(v)}return out;}
+ async function load(force=false){
+   $('refresh').disabled=true; showError('');
+   const interval=$('interval').value, key=CACHE_KEY+interval;
+   try{
+     if(!force){const raw=localStorage.getItem(key);if(raw){const cached=JSON.parse(raw);if(Date.now()-cached.savedAt<CACHE_MS){showData(cached.data,true);showError('Showing cached data to conserve API credits. It is marked stale and must not be used as a live signal.');return;}}}
+     const res=await fetch('/api/analyze?interval='+encodeURIComponent(interval),{cache:'no-store'});
+     const d=await res.json();
+     if(!res.ok||!d.ok) throw new Error(d.error||'Market data unavailable.');
+     localStorage.setItem(key,JSON.stringify({savedAt:Date.now(),data:d}));
+     showData(d,false);
+   }catch(e){
+     setStatus(false,'DATA UNAVAILABLE');
+     $('signal').textContent='WAIT';$('direction').textContent='WAIT';
+     $('reason').textContent='No verified live data; do not trade.';
+     for(const id of ['entry','sl','tp1','tp2','support','resistance','rsi','ema20','ema50'])$(id).textContent='—';
+     showError(String(e.message||e));
+     $('stale').textContent='Fresh data unavailable. No BUY/SELL signal is being issued.';
+   }finally{$('refresh').disabled=false}
+ }
+ $('refresh').addEventListener('click',()=>load(true));
+ $('interval').addEventListener('change',()=>load(false));
+ initChart(); load(false);
+})();
+</script></body></html>
