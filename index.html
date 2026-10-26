@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071321"><title>GOLDMIND AI V4 · LAMIC FX</title>
+<link rel="stylesheet" href="/style.css">
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.2.2/dist/lightweight-charts.standalone.production.js"></script></head>
+<body>
+<header class="top"><div><div class="brand">GOLD<span>MIND</span> AI <b>V4</b></div><div class="sub">XAU/USD MARKET ANALYSIS</div></div><div id="status" class="pill warn">● CHECKING DATA</div></header>
+<main>
+<section class="toolbar"><label>Timeframe<select id="interval"><option value="1min">1 minute</option><option value="5min">5 minutes</option><option value="15min" selected>15 minutes</option><option value="30min">30 minutes</option><option value="1h">1 hour</option><option value="4h">4 hours</option><option value="1day">1 day</option></select></label><button id="refresh">Refresh analysis</button></section>
+<section class="panel quote"><div class="eyebrow">GOLD / US DOLLAR · XAU/USD</div><div class="price-row"><div id="price" class="price">—</div><div id="signal" class="signal">WAIT</div></div><div id="lastCandle" class="muted">Waiting for market data…</div><p id="message" class="notice">Live data has not been verified. Signals stay disabled until fresh data is confirmed.</p><div class="meta"><span>Source: <b id="source">—</b></span><span>Updated: <b id="updated">—</b></span></div></section>
+<section class="panel chart-panel"><h2>Candlestick chart</h2><p class="muted">EMA 20 / EMA 50 · entry and risk levels</p><div id="chart" aria-label="XAU/USD candlestick chart"></div><div class="legend"><span><i class="green"></i> Bullish candle</span><span><i class="red"></i> Bearish candle</span><span><i class="blue"></i> EMA 20</span><span><i class="yellow"></i> EMA 50</span></div></section>
+<section class="grid"><article class="panel"><div class="eyebrow">TRADE PLAN</div><h3 id="planTitle">No verified setup</h3><p id="planText" class="muted">Wait for fresh candles and a valid strategy condition.</p></article><article class="panel"><div class="eyebrow">RISK LEVELS</div><dl><div><dt>Entry</dt><dd id="entry">—</dd></div><div><dt>Stop-loss</dt><dd id="sl">—</dd></div><div><dt>Take-profit</dt><dd id="tp">—</dd></div><div><dt>Risk / reward</dt><dd id="rr">—</dd></div></dl></article></section>
+<section class="panel small"><h3>Data integrity</h3><p id="integrity" class="muted">Checking timestamps and candle freshness…</p><p class="disclaimer">Educational market analysis only, not financial advice. Signals are not guarantees. Verify prices with your broker before acting. This app does not execute trades.</p></section>
+</main>
+<footer><div class="footer-brand"><span class="mark">LF</span><div><strong>LAMIC FX</strong><small>Market tools · analysis workspace</small></div></div><div>GOLDMIND AI V4</div></footer>
+<script src="/app.js"></script></body></html>
